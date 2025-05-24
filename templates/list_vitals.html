@@ -1,0 +1,20 @@
+{% include 'header.html' %}
+<h2>Istoricul semnelor vitale – {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+{% if vitals %}
+<table border="1">
+  <tr><th>Tip</th><th>Valoare</th><th>Data</th></tr>
+  {% for v in vitals %}
+  <tr>
+    <td>{{ v.sign_type }}</td>
+    <td>{{ v.sign_value }} {{ v.unit }}</td>
+    <td>{{ v.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Nu există înregistrări.</p>
+{% endif %}
+
+<a href="{{ url_for('patient_bp.dashboard_patient', pid=patient.id) }}">Înapoi la dashboard</a>
+{% include 'footer.html' %}

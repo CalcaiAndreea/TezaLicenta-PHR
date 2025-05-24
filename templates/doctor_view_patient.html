@@ -1,0 +1,61 @@
+{% include 'header.html' %}
+<h2>Fișa pacientului: {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+<h3>Semne vitale</h3>
+<table border="1">
+  <tr><th>Tip</th><th>Valoare</th><th>Data</th></tr>
+  {% for v in vitals %}
+    <tr>
+      <td>{{ v.sign_type }}</td>
+      <td>{{ v.sign_value }} {{ v.unit }}</td>
+      <td>{{ v.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<h3>Alergii</h3>
+<ul>
+  {% for a in allergies %}
+    <li>{{ a.substance }} – {{ a.severity }}</li>
+  {% endfor %}
+</ul>
+
+<h3>Analize de laborator</h3>
+<table border="1">
+  <tr><th>Tip</th><th>Rezultat</th><th>Data</th></tr>
+  {% for l in lab_results %}
+    <tr>
+      <td>{{ l.result_type }}</td>
+      <td>{{ l.result_value }} {{ l.unit }}</td>
+      <td>{{ l.collected_at.strftime('%Y-%m-%d') if l.collected_at else '' }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<h3>Medicații curente</h3>
+<ul>
+  {% for m in medications %}
+    <li>{{ m.medication_name }} – {{ m.dosage }}</li>
+  {% endfor %}
+</ul>
+
+<h3>Programări</h3>
+<table border="1">
+  <tr><th>Data</th><th>Motiv</th><th>Status</th></tr>
+  {% for ap in appointments %}
+    <tr>
+      <td>{{ ap.appointment_date.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ ap.reason }}</td>
+      <td>{{ ap.status }}</td>
+    </tr>
+  {% endfor %}
+</table>
+<h3>Adaugă recomandare pentru pacient</h3>
+<form method="post"
+      action="{{ url_for('recommend_bp.add_recommendation', pid=patient.id) }}">
+  <textarea name="reco_text" rows="3" style="width:100%;" placeholder="Scrie recomandarea..." required></textarea><br>
+  <button>Salvează recomandarea</button>
+</form>
+
+<a href="{{ url_for('doctor_bp.doctor_dashboard') }}">Înapoi la lista pacienților</a>
+{% include 'footer.html' %}

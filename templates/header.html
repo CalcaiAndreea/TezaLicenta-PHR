@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title|default('PHR Prototype') }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- Paletă de culori modernă ---------- */
+    :root {
+      --primary: #10b981; /* Verde smarald vibrant */
+      --primary-dark: #047857; /* Verde închis */
+      --primary-light: #d1fae5; /* Verde deschis */
+      --bg-light: #f9fafb; /* Fundal gri deschis */
+      --text: #111827; /* Text gri închis elegant */
+      --border: #e5e7eb; /* Gri subtil pentru borduri */
+      --accent: #3b82f6; /* Albastru modern pentru accente */
+      --danger: #dc2626; /* Roșu pentru erori */
+      --success: #16a34a; /* Verde pentru succes */
+      --info: #2563eb; /* Albastru pentru informații */
+      --sidebar-bg: #ffffff; /* Fundal alb pentru sidebar */
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* ---------- Reset și bază ---------- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-light);
+      color: var(--text);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    /* ---------- Layout principal ---------- */
+    .wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 24px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .sidebar-header span {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar-nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 12px 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .sidebar-nav a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+    .sidebar-nav a.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .content {
+      margin-left: 280px;
+      flex: 1;
+      padding: 32px;
+      background: var(--bg-light);
+      min-height: 100vh;
+    }
+
+    /* ---------- Headings ---------- */
+    h1, h2, h3, h4 {
+      color: var(--primary-dark);
+      font-weight: 700;
+      margin: 1.5rem 0 0.75rem;
+      letter-spacing: -0.025em;
+    }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.25rem; }
+
+    /* ---------- Tabele ---------- */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 24px 0;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    th, td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--primary-light);
+      font-weight: 600;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover {
+      background: var(--bg-light);
+      transition: background 0.2s ease;
+    }
+
+    /* ---------- Formulare și butoane ---------- */
+    form {
+      margin: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 600px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #fff;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-light);
+    }
+    button, a.btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    button:hover, a.btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    button:active, a.btn:active {
+      transform: translateY(0);
+    }
+
+    /* ---------- Mesaje flash ---------- */
+    .flash-success, .flash-danger, .flash-info {
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      font-weight: 500;
+    }
+    .flash-success {
+      background: var(--success);
+      color: #14532d;
+    }
+    .flash-danger {
+      background: var(--danger);
+      color: #fef2f2;
+    }
+    .flash-info {
+      background: var(--info);
+      color: #eff6ff;
+    }
+
+    /* ---------- Card recomandare ---------- */
+    .reco-card {
+      background: #fff;
+      padding: 20px;
+      margin: 16px 0;
+      border-radius: 12px;
+      border-left: 6px solid var(--primary);
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .reco-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .reco-card p {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+    .reco-card small {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    /* ---------- Chat ---------- */
+    .chat-box {
+      background: #fff;
+      padding: 20px;
+      height: 500px;
+      overflow-y: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin: 24px 0;
+      box-shadow: var(--shadow-lg);
+    }
+    .chat-box p {
+      margin: 12px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--bg-light);
+      font-size: 0.9375rem;
+      position: relative;
+    }
+    .chat-me {
+      background: var(--primary-light) !important;
+      margin-left: 25%;
+      color: var(--primary-dark);
+      border-top-right-radius: 0;
+    }
+    .chat-other {
+      background: #e5e7eb !important;
+      margin-right: 25%;
+      border-top-left-radius: 0;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      text-align: center;
+      margin: 40px 0 24px;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Animații moderne ---------- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .content > * {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* ---------- Responsivitate ---------- */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+      }
+      .sidebar.active {
+        transform: translateY(0);
+      }
+      .content {
+        margin-left: 0;
+        padding: 16px;
+      }
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 1100;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+      }
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.75rem; }
+      h3 { font-size: 1.25rem; }
+      .chat-box {
+        height: 400px;
+      }
+      .chat-me, .chat-other {
+        margin-left: 10%;
+        margin-right: 10%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰ Meniu</button>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span>PHR Prototype</span>
+      </div>
+      <nav class="sidebar-nav">
+        {% if session.get('role') == 'patient' %}
+          <a href="{{ url_for('patient_bp.dashboard_patient', pid=session.get('patient_id',0)) }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Dashboard pacient
+          </a>
+          <a href="{{ url_for('messaging_bp.inbox') }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Mesaje
+          </a>
+          <a href="{{ url_for('patient_bp.dashboard_patient', pid=session.get('patient_id',0)) }}#recommendations">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            Recomandări
+          </a>
+        {% elif session.get('role') == 'doctor' %}
+          <a href="{{ url_for('doctor_bp.doctor_dashboard') }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Dashboard medic
+          </a>
+          <a href="{{ url_for('messaging_bp.inbox') }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Mesaje
+          </a>
+        {% endif %}
+      </nav>
+      <div class="sidebar-footer">
+        {% if session.get('role') %}
+          <a href="{{ url_for('login_bp.logout') }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="8.5" r="4"></circle>
+              <path d="M20 8V5a2 2 0 0 0-2-2h-6"></path>
+              <path d="M23 8l-5-5m0 5l5-5"></path>
+            </svg>
+            Logout
+          </a>
+        {% endif %}
+      </div>
+    </aside>
+    <main class="content">
+      <h1>{{ title|default('Dashboard') }}</h1>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+  </script>

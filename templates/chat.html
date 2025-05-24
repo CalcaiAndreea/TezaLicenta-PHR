@@ -1,0 +1,23 @@
+{% include 'header.html' %}
+<h2>Chat cu {{ partner.email }}</h2>
+
+<div style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:auto;">
+  {% for m in messages %}
+    <p style="margin:4px 0;">
+      <strong>{{ 'Eu' if m.from_user_id==me.id else partner.email }}:</strong>
+      {{ m.content }}
+      <span style="font-size:0.75em; color:#666;">
+        ({{ m.sent_at.strftime('%Y-%m-%d %H:%M') }})
+      </span>
+    </p>
+  {% endfor %}
+</div>
+
+<form action="{{ url_for('messaging_bp.send_message') }}" method="post" style="margin-top:10px;">
+  <input type="hidden" name="to_user_id" value="{{ partner.id }}">
+  <input name="content" style="width:80%;" placeholder="Scrie mesaj…" required>
+  <button>Trimite</button>
+</form>
+
+<a href="{{ url_for('messaging_bp.inbox') }}">⬅ Înapoi la conversații</a>
+{% include 'footer.html' %}

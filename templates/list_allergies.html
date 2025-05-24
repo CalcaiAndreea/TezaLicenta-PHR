@@ -1,0 +1,27 @@
+{% include 'header.html' %}
+<h2>Alergiile lui {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+{% if allergies %}
+<table border="1">
+  <tr>
+    <th>Substanță</th>
+    <th>Reacție</th>
+    <th>Severitate</th>
+    <th>Înregistrată la</th>
+  </tr>
+  {% for a in allergies %}
+  <tr>
+    <td>{{ a.substance }}</td>
+    <td>{{ a.reaction or '—' }}</td>
+    <td>{{ a.severity }}</td>
+    <td>{{ a.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Nu există alergii înregistrate.</p>
+{% endif %}
+
+<br>
+<a href="{{ url_for('patient_bp.dashboard_patient', pid=patient.id) }}">⟵ Înapoi la dashboard</a>
+{% include 'footer.html' %}

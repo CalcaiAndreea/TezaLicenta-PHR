@@ -1,0 +1,12 @@
+{% include 'header.html' %}
+<h2>Lista pacienților</h2>
+<ul>
+  {% for p in patients %}
+    <li>
+      <a href="{{ url_for('doctor_bp.doctor_view_patient', pid=p.id) }}">
+        {{ p.last_name }} {{ p.first_name }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% include 'footer.html' %}

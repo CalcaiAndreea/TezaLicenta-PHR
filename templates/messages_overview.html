@@ -1,0 +1,18 @@
+{% include 'header.html' %}
+<h2>Conversații</h2>
+
+{% if partners %}
+<ul>
+  {% for u in partners %}
+    <li>
+      <a href="{{ url_for('messaging_bp.chat', partner_id=u.id) }}">
+         {{ u.email }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Nu există parteneri de conversație.</p>
+{% endif %}
+
+{% include 'footer.html' %}

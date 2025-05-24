@@ -1,0 +1,11 @@
+{% include 'header.html' %}
+<h2>Autentificare</h2>
+{% with messages=get_flashed_messages(with_categories=true) %}
+  {% for cat,msg in messages %}<p style="color:red">{{ msg }}</p>{% endfor %}
+{% endwith %}
+<form method="post">
+  Email: <input type="email" name="email" required><br>
+  Parolă:<input type="password" name="password" required><br>
+  <button>Login</button>
+</form>
+{% include 'footer.html' %}

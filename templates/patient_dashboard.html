@@ -1,0 +1,135 @@
+{% include 'header.html' %}
+<!-- titlu dinamizat în header folosind {{ title }} dacă dorești -->
+
+<h2>Bun venit, {{ patient.first_name }} {{ patient.last_name }}</h2>
+
+<!-- ============== SEMNE VITALE ============== -->
+<h3>Semne vitale recente</h3>
+{% if vitals %}
+<table border="1">
+  <tr><th>Tip</th><th>Valoare</th><th>Data</th></tr>
+  {% for v in vitals[:10] %}   {# afişăm doar ultimele 10 #}
+    <tr>
+      <td>{{ v.sign_type }}</td>
+      <td>{{ v.sign_value }} {{ v.unit }}</td>
+      <td>{{ v.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+  {% endfor %}
+</table>
+<a href="{{ url_for('list_vitals_bp.list_vitals', pid=patient.id) }}">Vezi tot istoricul</a>
+{% else %}
+<p>Nu există semne vitale înregistrate.</p>
+{% endif %}
+
+
+
+
+
+<!-- Formular adăugare semn vital -->
+<h4>Adaugă semn vital</h4>
+<form action="{{ url_for('add_vital_bp.add_vital') }}" method="post">
+  <input type="hidden" name="patient_id" value="{{ patient.id }}">
+  <select name="sign_type">
+    <option value="blood_sugar">Glicemie</option>
+    <option value="blood_pressure">Tensiune</option>
+  </select>
+  <input name="sign_value" placeholder="valoare" required>
+  <input name="unit" placeholder="unitate (mg/dL, mmHg)">
+  <button>Salvează</button>
+</form>
+
+
+<!-- ============== ALERGII ============== -->
+<h3>Alergii</h3>
+{% if allergies %}
+<ul>
+  {% for a in allergies %}
+    <li>{{ a.substance }} – {{ a.severity }} ({{ a.reaction or 'fără reacţie notată' }})</li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('list_allergies_bp.list_allergies', pid=patient.id) }}">Vezi toate alergiile</a>
+{% else %}
+<p>Nu există alergii înregistrate.</p>
+{% endif %}
+
+<!-- Formular adăugare alergie -->
+<h4>Adaugă alergie</h4>
+<form action="{{ url_for('add_allergy_bp.add_allergy') }}" method="post">
+  <input type="hidden" name="patient_id" value="{{ patient.id }}">
+  Substanţă: <input name="substance" required>
+  Reacţie:   <input name="reaction">
+  <select name="severity">
+    <option value="mild">mild</option>
+    <option value="moderate">moderate</option>
+    <option value="severe">severe</option>
+  </select>
+  <button>Salvează</button>
+</form>
+
+
+<!-- ============== ANALIZE DE LABORATOR ============== -->
+<h3>Rezultate de laborator recente</h3>
+{% if lab_results %}
+<table border="1">
+  <tr><th>Tip</th><th>Rezultat</th><th>Data</th></tr>
+  {% for l in lab_results[:10] %}
+    <tr>
+      <td>{{ l.result_type }}</td>
+      <td>{{ l.result_value }} {{ l.unit }}</td>
+      <td>{{ l.collected_at.strftime('%Y-%m-%d') if l.collected_at else '' }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Nu există analize încărcate.</p>
+{% endif %}
+
+
+<!-- ============== MEDICAŢII ============== -->
+<h3>Medicaţii curente</h3>
+{% if medications %}
+<ul>
+  {% for m in medications %}
+    <li>{{ m.medication_name }} – {{ m.dosage or 'dozaj nedefinit' }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Nu sunt medicaţii active.</p>
+{% endif %}
+
+<!-- ============== RECOMANDĂRI ============== -->
+<h3 style="margin-top:25px;">Recomandările medicului</h3>
+{% if patient.recommendations %}
+  {% for r in patient.recommendations|sort(attribute='created_at', reverse=True) %}
+    <div style="border-left:4px solid #0B5ED7; padding:8px 12px; margin:8px 0;
+                background:#f8faff; border-radius:4px;">
+      <p style="margin:0;">{{ r.text }}</p>
+      <small style="color:#555;">
+        — {{ r.doctor.first_name }} {{ r.doctor.last_name }},
+        {{ r.created_at.strftime('%d %b %Y %H:%M') }}
+      </small>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>Nu ai recomandări momentan.</p>
+{% endif %}
+
+<!-- ============== PROGRAMĂRI ============== -->
+<h3>Programări</h3>
+{% if appointments %}
+<table border="1">
+  <tr><th>Data</th><th>Motiv</th><th>Status</th></tr>
+  {% for ap in appointments %}
+    <tr>
+      <td>{{ ap.appointment_date.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ ap.reason }}</td>
+      <td>{{ ap.status }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Nu există programări.</p>
+{% endif %}
+
+<a href="{{ url_for('login_bp.logout') }}">Logout</a>
+{% include 'footer.html' %}
