@@ -20,3 +20,19 @@ Un prototip de aplicație pentru gestionarea datelor medicale personale (PHR) ș
 
 ## 📂 Structura proiectului
 
+| Folder / Fișier | Descriere |
+|-----------------|-----------|
+| `app.py` | Punctul de pornire al aplicației Flask |
+| `models.py` | Modelele bazei de date (Pacient, Medic, Analize etc.) |
+| `config.py`, `db.py` | Configurarea și inițializarea bazei de date |
+| `templates/` | Șabloanele HTML (folosind Jinja2) |
+| `static/css/` | Fișierele CSS pentru interfață |
+| `patient_dashboard.py` | Funcționalitățile pentru interfața pacientului |
+| `doctor_dashboard.py` | Funcționalitățile pentru medic |
+| `recommendations.py` | Modulul AI care generează recomandări medicale |
+| `messaging.py` | Sistem de mesagerie între pacient și medic |
+| `add_allergy.py`, `add_vital.py` | Formulare pentru introducerea de date |
+| `login.py`, `logout.py` | Autentificare și deconectare utilizatori |
+| `list_allergies.py`, `list_vitals.py` | Vizualizarea listelor de date PHR |
+| `view_patient.py` | Modul pentru medic de a accesa fișa pacientului |
+| `.env` | Variabile de mediu (ascuns în mod normal) |
